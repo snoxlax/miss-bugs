@@ -80,5 +80,12 @@
     "fullname": "kelvin",
     "password": "$2b$10$BfHkPVFU4gNKwaJ1BzYWYuiUEHigJWsG3hRkepJQq0GKsZK39zpVK",
     "score": 0
+  },
+  {
+    "_id": "ea78b08b-bc20-4d5e-a803-4f3d0a7ec56a",
+    "username": "k",
+    "fullname": "kkk",
+    "password": "$2b$10$P7LRxY7xXrhhvpOHj.0t6utPx6M0KAqhzTnS.EsxBZxW9riTwtOdq",
+    "score": 0
   }
 ]

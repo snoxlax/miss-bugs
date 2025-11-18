@@ -96,11 +96,7 @@ export function BugIndex() {
         </form>
         <button onClick={onAddBug}>Add Bug ⛐</button>
         <a
-          href={`${
-            window.location.hostname.includes('onrender.com')
-              ? window.location.origin + '/'
-              : import.meta.env.VITE_API_URL || 'http://localhost:3030/'
-          }bugs/download`}
+          href="http://localhost:3030/bugs/download"
           target="_blank"
           rel="noreferrer"
         >
