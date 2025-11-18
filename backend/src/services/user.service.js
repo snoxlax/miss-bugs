@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-const DATA_FILE = '../../data/users.json';
+const DATA_FILE = '/backend/data/users.json';
 
 let users = [];
 

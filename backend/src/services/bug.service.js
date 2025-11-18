@@ -1,7 +1,7 @@
 import fs from 'fs';
 import PDFDocument from 'pdfkit';
 
-const DATA_FILE = '../../data/bugs.json';
+const DATA_FILE = '/backend/data/bugs.json';
 
 let bugs = [];
 
