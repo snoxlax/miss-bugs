@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-const DATA_FILE = 'data/users.json';
+const DATA_FILE = '../../data/users.json';
 
 let users = [];
 
@@ -27,7 +27,7 @@ function findAll() {
 }
 
 function findById(id) {
-  return users.find(user => user._id === id);
+  return users.find((user) => user._id === id);
 }
 
 function create(data) {
@@ -55,7 +55,7 @@ function update(id, data) {
 }
 
 function remove(id) {
-  const index = users.findIndex(user => user._id === id);
+  const index = users.findIndex((user) => user._id === id);
   if (index !== -1) {
     users.splice(index, 1);
     return true;
