@@ -1,0 +1,84 @@
+[
+  {
+    "username": "tommy",
+    "password": "tommy1",
+    "fullname": "tommy",
+    "_id": "fLtg9",
+    "isAdmin": true
+  },
+  {
+    "_id": "u101",
+    "username": "ruki",
+    "password": "ruki1",
+    "fullname": "Ruki The Rock"
+  },
+  {
+    "_id": "u102",
+    "username": "yy",
+    "password": "yy",
+    "fullname": "Muki The Mock"
+  },
+  {
+    "username": "jj",
+    "password": "jj",
+    "fullname": "Puki The Shock",
+    "_id": "GKEge"
+  },
+  {
+    "username": "luki",
+    "password": "luki1",
+    "fullname": "Luki The Lock",
+    "_id": "wLneI"
+  },
+  {
+    "username": "elon5000",
+    "password": "1",
+    "_id": "s4UUk"
+  },
+  {
+    "username": "BB",
+    "password": "BB",
+    "_id": "zrPxf"
+  },
+  {
+    "username": "risan",
+    "password": "risan",
+    "_id": "SX8Xt"
+  },
+  {
+    "username": "tomi",
+    "password": "tomi",
+    "_id": "lwpcy"
+  },
+  {
+    "username": "new",
+    "password": "$2b$10$TfXeopF6gE4EAbAL4LpD4OKW83YZLYGSYGDkVXBahVRwmrJ58JvyO",
+    "fullname": "new",
+    "_id": "75FmR",
+    "score": 10000,
+    "imgUrl": "https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png"
+  },
+  {
+    "username": "dd",
+    "password": "$2b$10$hBMZmcKW5a3a1S621TnlX.FUWTwsbREvY0bDrKA6Nj6NSqeG63tze",
+    "fullname": "dd",
+    "_id": "IpE2n",
+    "score": 10000,
+    "isAdmin": true,
+    "imgUrl": "https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png"
+  },
+  {
+    "_id": "b071b4b3-141f-4a21-94a6-715e18c9b0aa",
+    "username": "pokimon",
+    "fullname": "poki",
+    "password": "$2b$10$Y71DLBSQTzTMn4YYQW3H.elM3Z.z6eDz/vtmWyqC12i5dla8sTflm",
+    "score": 0
+  },
+  {
+    "_id": "bf66eafd-4ac3-46d3-878b-36b58a4ac78d",
+    "username": "kkk",
+    "fullname": "kelvin",
+    "password": "$2b$10$BfHkPVFU4gNKwaJ1BzYWYuiUEHigJWsG3hRkepJQq0GKsZK39zpVK",
+    "score": 0
+  }
+]

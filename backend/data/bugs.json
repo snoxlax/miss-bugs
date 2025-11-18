@@ -1,0 +1,210 @@
+[
+  {
+    "_id": "a1b2c3",
+    "title": "User cannot login",
+    "severity": 2,
+    "createdAt": 1672312459454,
+    "description": "Users report being unable to log in with valid credentials.",
+    "labels": [
+      "auth",
+      "frontend"
+    ],
+    "creator": {
+      "_id": "u104",
+      "fullname": "Lina Kim"
+    }
+  },
+  {
+    "_id": "d4e5f6",
+    "title": "Page not loading on Safari",
+    "severity": 1,
+    "createdAt": 1672412459454,
+    "description": "The main page fails to render when accessed via Safari browser.",
+    "labels": [
+      "frontend",
+      "ui",
+      "browser"
+    ],
+    "creator": {
+      "_id": "u110",
+      "fullname": "Noa Levi"
+    }
+  },
+  {
+    "_id": "g7h8i9",
+    "title": "API returns 500 error",
+    "severity": 3,
+    "createdAt": 1672512459454,
+    "description": "Server responds with a 500 error for certain API requests.",
+    "labels": [
+      "backend",
+      "api"
+    ],
+    "creator": {
+      "_id": "u102",
+      "fullname": "Sara Lee"
+    }
+  },
+  {
+    "_id": "j0k1l2",
+    "title": "Payment gateway timeout",
+    "severity": 4,
+    "createdAt": 1672612459454,
+    "description": "Payment processing fails due to gateway timeout issues.",
+    "labels": [
+      "backend",
+      "integration"
+    ],
+    "creator": {
+      "_id": "u101",
+      "fullname": "Muki Ja"
+    }
+  },
+  {
+    "_id": "m3n4o5",
+    "title": "Cannot create new board",
+    "severity": 2,
+    "createdAt": 1672712459454,
+    "description": "Attempting to create a new board does not work for some users.",
+    "labels": [
+      "frontend",
+      "ui"
+    ],
+    "creator": {
+      "_id": "u108",
+      "fullname": "Roni Bar"
+    }
+  },
+  {
+    "_id": "p6q7r8",
+    "title": "Search feature not working",
+    "severity": 1,
+    "createdAt": 1672812459454,
+    "description": "Search returns no results even when matching items exist.",
+    "labels": [
+      "frontend",
+      "ui",
+      "feature"
+    ],
+    "creator": {
+      "_id": "u105",
+      "fullname": "Ben Cohen"
+    }
+  },
+  {
+    "_id": "s9t0u1",
+    "title": "Cards not saving order",
+    "severity": 2,
+    "createdAt": 1672912459454,
+    "description": "Reordering cards does not persist after page reload.",
+    "labels": [
+      "frontend",
+      "ui",
+      "database"
+    ],
+    "creator": {
+      "_id": "u106",
+      "fullname": "Dana Wu"
+    }
+  },
+  {
+    "_id": "v2w3x4",
+    "title": "Email notifications missing",
+    "severity": 1,
+    "createdAt": 1673012459454,
+    "description": "Users do not receive email notifications for updates.",
+    "labels": [
+      "backend",
+      "integration"
+    ],
+    "creator": {
+      "_id": "u109",
+      "fullname": "Gal Peri"
+    }
+  },
+  {
+    "_id": "y5z6a7",
+    "title": "Slow response on dashboard",
+    "severity": 2,
+    "createdAt": 1673112459454,
+    "description": "Dashboard loads slowly, especially with large datasets.",
+    "labels": [
+      "performance",
+      "frontend",
+      "dashboard"
+    ],
+    "creator": {
+      "_id": "u103",
+      "fullname": "Tom Fox"
+    }
+  },
+  {
+    "_id": "b8c9d0",
+    "title": "Labels not applied correctly",
+    "severity": 3,
+    "createdAt": 1673212459454,
+    "description": "Applying labels to items does not always work as expected.",
+    "labels": [
+      "frontend",
+      "ui",
+      "labels"
+    ],
+    "creator": {
+      "_id": "u107",
+      "fullname": "Omer Ziv"
+    }
+  },
+  {
+    "_id": "e1f2g3",
+    "title": "Cannot delete workspace",
+    "severity": 4,
+    "createdAt": 1673312459454,
+    "description": "Workspace deletion fails with an unknown error.",
+    "labels": [
+      "backend",
+      "database"
+    ],
+    "creator": {
+      "_id": "u2876",
+      "fullname": "sava"
+    }
+  },
+  {
+    "_id": "h4i5j6",
+    "title": "Drag and drop broken",
+    "severity": 3,
+    "createdAt": 1673412459454,
+    "description": "Drag and drop functionality does not work on the board.",
+    "labels": [
+      "frontend",
+      "ui",
+      "feature"
+    ],
+    "creator": {
+      "_id": "u102",
+      "fullname": "Sara Lee"
+    }
+  },
+  {
+    "_id": "13",
+    "title": "fsdfsdfsdf",
+    "severity": 677,
+    "description": "",
+    "labels": [],
+    "creator": {
+      "_id": "u110",
+      "fullname": "Noa Levi"
+    }
+  },
+  {
+    "_id": "14",
+    "title": "pokis bug",
+    "severity": 10,
+    "description": "",
+    "labels": [],
+    "creator": {
+      "_id": "b071b4b3-141f-4a21-94a6-715e18c9b0aa",
+      "fullname": "poki"
+    }
+  }
+]
