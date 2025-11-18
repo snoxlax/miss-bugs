@@ -18,9 +18,11 @@ app.use(
 app.use(cookieParser());
 app.use(logger('dev'));
 app.use(express.json());
+app.use(express.static('public'));
 
 app.use('/bugs', bugRoutes);
 app.use('/users', userRoutes);
 app.use('/auth', authRoutes);
 
-app.listen(3030, () => console.log('Server ready at port 3030'));
+const port = process.env.PORT || 3030;
+app.listen(port, () => console.log(`Server ready at port ${port}`));
