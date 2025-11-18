@@ -1,10 +1,12 @@
 import fs from 'fs';
-import path from 'path';
+import { fileURLToPath } from 'url';
 import { randomUUID } from 'crypto';
 import bcrypt from 'bcrypt';
 import Cryptr from 'cryptr';
 
-const USERS_PATH = path.resolve('data/users.json');
+const USERS_PATH = fileURLToPath(
+  new URL('../../data/users.json', import.meta.url)
+);
 const SALT_ROUNDS = 10;
 const cryptr = new Cryptr(process.env.CRYPTER_SECRET || '123456');
 

@@ -1,6 +1,9 @@
 import fs from 'fs';
+import { fileURLToPath } from 'url';
 
-const DATA_FILE = '/backend/data/users.json';
+const DATA_FILE = fileURLToPath(
+  new URL('../../data/users.json', import.meta.url)
+);
 
 let users = [];
 

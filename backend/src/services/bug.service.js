@@ -1,7 +1,10 @@
 import fs from 'fs';
+import { fileURLToPath } from 'url';
 import PDFDocument from 'pdfkit';
 
-const DATA_FILE = '/backend/data/bugs.json';
+const DATA_FILE = fileURLToPath(
+  new URL('../../data/bugs.json', import.meta.url)
+);
 
 let bugs = [];
 
