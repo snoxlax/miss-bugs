@@ -22,7 +22,7 @@ export function BugIndex() {
     try {
       await bugService.remove(bugId);
       console.log('Deleted Succesfully!');
-      setBugs(prevBugs => prevBugs.filter(bug => bug._id !== bugId));
+      setBugs((prevBugs) => prevBugs.filter((bug) => bug._id !== bugId));
       showSuccessMsg('Bug removed');
     } catch (err) {
       console.log('Error from onRemoveBug ->', err);
@@ -38,7 +38,7 @@ export function BugIndex() {
     try {
       const savedBug = await bugService.save(bug);
       console.log('Added Bug', savedBug);
-      setBugs(prevBugs => [...prevBugs, savedBug]);
+      setBugs((prevBugs) => [...prevBugs, savedBug]);
       showSuccessMsg('Bug added');
     } catch (err) {
       console.log('Error from onAddBug ->', err);
@@ -52,8 +52,8 @@ export function BugIndex() {
     try {
       const savedBug = await bugService.save(bugToSave);
       console.log('Updated Bug:', savedBug);
-      setBugs(prevBugs =>
-        prevBugs.map(currBug =>
+      setBugs((prevBugs) =>
+        prevBugs.map((currBug) =>
           currBug._id === savedBug._id ? savedBug : currBug
         )
       );
@@ -66,7 +66,7 @@ export function BugIndex() {
 
   function handleChange(e) {
     const { name, value } = e.target;
-    setFilterBy(prevFilterBy => ({
+    setFilterBy((prevFilterBy) => ({
       ...prevFilterBy,
       [name]: name === 'severity' ? Number(value) : value,
     }));
@@ -96,12 +96,19 @@ export function BugIndex() {
         </form>
         <button onClick={onAddBug}>Add Bug ⛐</button>
         <a
-          href="http://localhost:3030/bugs/download"
+          href={`${
+            import.meta.env.VITE_API_URL || 'http://localhost:3030/'
+          }bugs/download`}
           target="_blank"
-          rel="noreferrer">
+          rel="noreferrer"
+        >
           Download bugs
         </a>
-        <BugList bugs={bugs} onRemoveBug={onRemoveBug} onEditBug={onEditBug} />
+        <BugList
+          bugs={bugs}
+          onRemoveBug={onRemoveBug}
+          onEditBug={onEditBug}
+        />
       </main>
     </section>
   );
