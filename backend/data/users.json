@@ -1,8 +1,8 @@
 [
   {
-    "username": "tommy",
-    "password": "tommy1",
-    "fullname": "tommy",
+    "username": "admin",
+    "password": "admin123",
+    "fullname": "admin",
     "_id": "fLtg9",
     "isAdmin": true
   },
