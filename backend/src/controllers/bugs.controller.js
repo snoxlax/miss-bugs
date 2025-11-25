@@ -32,93 +32,120 @@ function validateSortParams(sortBy, sortDir, res) {
   return true;
 }
 
-export function getBugs(req, res) {
-  const { sortBy, sortDir, pageIdx, pageSize, txt, minSeverity, labels } =
-    req.query;
+export async function getBugs(req, res) {
+  try {
+    const { sortBy, sortDir, pageIdx, pageSize, txt, minSeverity, labels } =
+      req.query;
 
-  if (!validateSortParams(sortBy, sortDir, res)) {
-    return;
-  }
+    if (!validateSortParams(sortBy, sortDir, res)) {
+      return;
+    }
 
-  const result = bugService.findAll({
-    sortBy,
-    sortDir,
-    pageIdx,
-    pageSize,
-    txt,
-    minSeverity,
-    labels,
-  });
+    const result = await bugService.findAll({
+      sortBy,
+      sortDir,
+      pageIdx,
+      pageSize,
+      txt,
+      minSeverity,
+      labels,
+    });
 
-  res.json(result);
-}
-
-export function getBug(req, res) {
-  const bugId = req.params.id;
-  let visitedBugs;
-  if (req.cookies.visitedBugs) {
-    visitedBugs = JSON.parse(req.cookies.visitedBugs);
-  } else {
-    visitedBugs = [];
-  }
-
-  if (!visitedBugs.includes(bugId)) {
-    if (visitedBugs.length < 3) visitedBugs.push(bugId);
-    else return res.status(429).send('Bug visit limit reached');
-  }
-
-  const bug = bugService.findById(bugId);
-
-  res.cookie('visitedBugs', JSON.stringify(visitedBugs), { maxAge: 10000 });
-  if (bug) {
-    res.json(bug);
-  } else {
-    notFound(res);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch bugs' });
   }
 }
 
-export function createBug(req, res) {
-  const newBug = bugService.create(req.body, req.currentUser);
-  bugService.saveData();
-  res.status(201).json(newBug);
-}
+export async function getBug(req, res) {
+  try {
+    const bugId = req.params.id;
+    let visitedBugs;
+    if (req.cookies.visitedBugs) {
+      visitedBugs = JSON.parse(req.cookies.visitedBugs);
+    } else {
+      visitedBugs = [];
+    }
 
-export function updateBug(req, res) {
-  const bug = bugService.findById(req.params.id);
-  if (!canModifyBug(req.currentUser, bug)) {
-    return res.status(403).send('Forbidden');
-  }
+    if (!visitedBugs.includes(bugId)) {
+      if (visitedBugs.length < 3) visitedBugs.push(bugId);
+      else return res.status(429).send('Bug visit limit reached');
+    }
 
-  const updatedBug = bugService.update(req.params.id, req.body);
-  if (updatedBug) {
-    bugService.saveData();
-    res.json(updatedBug);
-  } else {
-    notFound(res);
-  }
-}
+    const bug = await bugService.findById(bugId);
 
-export function deleteBug(req, res) {
-  const bug = bugService.findById(req.params.id);
-  if (!canModifyBug(req.currentUser, bug)) {
-    return res.status(403).send('Forbidden');
-  }
-
-  const success = bugService.remove(req.params.id);
-  if (success) {
-    bugService.saveData();
-    res.status(204).send();
-  } else {
-    notFound(res);
+    res.cookie('visitedBugs', JSON.stringify(visitedBugs), { maxAge: 10000 });
+    if (bug) {
+      res.json(bug);
+    } else {
+      notFound(res);
+    }
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch bug' });
   }
 }
 
-export function downloadBugs(_, res) {
-  const pdf = bugService.toPdf();
-  res.setHeader('Content-Type', 'application/pdf');
-  res.setHeader('Content-Disposition', 'attachment; filename=bugs.pdf');
-  pdf.pipe(res);
-  pdf.end();
+export async function createBug(req, res) {
+  try {
+    const newBug = await bugService.create(req.body, req.currentUser);
+    res.status(201).json(newBug);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to create bug' });
+  }
+}
+
+export async function updateBug(req, res) {
+  try {
+    const bug = await bugService.findById(req.params.id);
+    if (!bug) {
+      return notFound(res);
+    }
+    if (!canModifyBug(req.currentUser, bug)) {
+      return res.status(403).send('Forbidden');
+    }
+
+    const updatedBug = await bugService.update(req.params.id, req.body);
+    if (updatedBug) {
+      res.json(updatedBug);
+    } else {
+      notFound(res);
+    }
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update bug' });
+  }
+}
+
+export async function deleteBug(req, res) {
+  try {
+    const bug = await bugService.findById(req.params.id);
+    if (!bug) {
+      return notFound(res);
+    }
+    if (!canModifyBug(req.currentUser, bug)) {
+      return res.status(403).send('Forbidden');
+    }
+
+    const success = await bugService.remove(req.params.id);
+    if (success) {
+      res.status(204).send();
+    } else {
+      notFound(res);
+    }
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete bug' });
+  }
+}
+
+export async function downloadBugs(_, res) {
+  try {
+    const pdf = await bugService.toPdf();
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename=bugs.pdf');
+    pdf.pipe(res);
+    pdf.end();
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to generate PDF' });
+  }
 }
 
 function notFound(res) {

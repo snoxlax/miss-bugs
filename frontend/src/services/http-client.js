@@ -10,7 +10,7 @@ const getBaseURL = () => {
 
   // For same-origin (backend serves frontend), use relative path
   // Empty string means same origin - works on localhost and Render
-  return '';
+  return 'http://localhost:3030';
 };
 
 const client = axios.create({

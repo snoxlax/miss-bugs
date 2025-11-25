@@ -1,48 +1,67 @@
 import { userService } from '../services/user.service.js';
 import { canDeleteUser } from '../middleware/permissions.js';
 
-export function getUsers(_, res) {
-  const users = userService.findAll();
-  console.log('users:', users);
-  res.json(users);
-}
-
-export function getUser(req, res) {
-  const user = userService.findById(req.params.id);
-  if (user) {
-    res.json(user);
-  } else {
-    notFound(res);
+export async function getUsers(_, res) {
+  try {
+    const users = await userService.findAll();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch users' });
   }
 }
 
-export function createUser(req, res) {
-  const newUser = userService.create(req.body);
-  userService.saveData();
-  res.status(201).json(newUser);
-}
-
-export function updateUser(req, res) {
-  const updatedUser = userService.update(req.params.id, req.body);
-  if (updatedUser) {
-    userService.saveData();
-    res.json(updatedUser);
-  } else {
-    notFound(res);
+export async function getUser(req, res) {
+  try {
+    const user = await userService.findById(req.params.id);
+    if (user) {
+      res.json(user);
+    } else {
+      notFound(res);
+    }
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch user' });
   }
 }
 
-export function deleteUser(req, res) {
-  const userToDelete = userService.findById(req.params.id);
-  if (!canDeleteUser(req.currentUser, userToDelete)) {
-    return res.status(403).send('Forbidden');
+export async function createUser(req, res) {
+  try {
+    const newUser = await userService.create(req.body);
+    res.status(201).json(newUser);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to create user' });
   }
-  const success = userService.remove(req.params.id);
-  if (success) {
-    userService.saveData();
-    res.status(204).send();
-  } else {
-    notFound(res);
+}
+
+export async function updateUser(req, res) {
+  try {
+    const updatedUser = await userService.update(req.params.id, req.body);
+    if (updatedUser) {
+      res.json(updatedUser);
+    } else {
+      notFound(res);
+    }
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update user' });
+  }
+}
+
+export async function deleteUser(req, res) {
+  try {
+    const userToDelete = await userService.findById(req.params.id);
+    if (!userToDelete) {
+      return notFound(res);
+    }
+    if (!(await canDeleteUser(req.currentUser, userToDelete))) {
+      return res.status(403).send('Forbidden');
+    }
+    const success = await userService.remove(req.params.id);
+    if (success) {
+      res.status(204).send();
+    } else {
+      notFound(res);
+    }
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete user' });
   }
 }
 

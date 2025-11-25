@@ -1,9 +1,7 @@
-import fs from 'fs';
-import { randomUUID } from 'crypto';
 import bcrypt from 'bcrypt';
 import Cryptr from 'cryptr';
+import { userService } from './user.service.js';
 
-const USERS_PATH = 'data/users.json';
 const SALT_ROUNDS = 10;
 const cryptr = new Cryptr(process.env.CRYPTER_SECRET || '123456');
 
@@ -24,42 +22,49 @@ function validateToken(token) {
   return null;
 }
 
-function login({ username, password }) {
-  const users = _getUsers();
-  const user = users.find(
-    (u) => u.username === username && u.password === password
-  );
-  if (!user) return null;
-  const { password: _, ...userWithoutPassword } = user;
-  return userWithoutPassword;
-}
+async function login({ username, password }) {
+  try {
+    const user = await userService.findByUsername(username);
 
-function signup({ username, fullname, password }) {
-  const users = _getUsers();
-  if (users.some((u) => u.username === username)) {
-    throw new Error('Username already exists');
+    if (!user) return null;
+
+    const isPasswordValid =
+      user.password === password ||
+      (user.password.startsWith('$2') &&
+        (await bcrypt.compare(password, user.password)));
+
+    if (!isPasswordValid) return null;
+
+    const { password: _, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  } catch (err) {
+    console.error('Login error:', err);
+    return null;
   }
-  const _id = randomUUID();
-  const hashedPassword = bcrypt.hashSync(password, SALT_ROUNDS);
-  const newUser = {
-    _id,
-    username,
-    fullname,
-    password: hashedPassword,
-    score: 0,
-  };
-  users.push(newUser);
-  _saveUsers(users);
-  const { password: _, ...userWithoutPassword } = newUser;
-  return userWithoutPassword;
 }
 
-function _getUsers() {
-  return JSON.parse(fs.readFileSync(USERS_PATH, 'utf8'));
-}
+async function signup({ username, fullname, password }) {
+  try {
+    const existingUser = await userService.findByUsername(username);
+    if (existingUser) {
+      throw new Error('Username already exists');
+    }
 
-function _saveUsers(users) {
-  fs.writeFileSync(USERS_PATH, JSON.stringify(users, null, 2));
+    const hashedPassword = bcrypt.hashSync(password, SALT_ROUNDS);
+    const newUser = await userService.create({
+      username,
+      fullname,
+      password: hashedPassword,
+      score: 0,
+      isAdmin: false,
+    });
+
+    const { password: _, ...userWithoutPassword } = newUser;
+    return userWithoutPassword;
+  } catch (err) {
+    console.error('Signup error:', err);
+    throw err;
+  }
 }
 
 export const authService = {

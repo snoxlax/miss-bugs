@@ -13,9 +13,16 @@ export function BugIndex() {
   }, [filterBy]);
 
   async function loadBugs() {
-    let bugs = await bugService.query();
-    bugs = bugService.filterBugs(bugs, filterBy);
-    setBugs(bugs);
+    try {
+      let result = await bugService.query();
+      // Handle response format: could be { bugs: [] } or just []
+      let bugs = Array.isArray(result) ? result : result.bugs || [];
+      bugs = bugService.filterBugs(bugs, filterBy);
+      setBugs(bugs);
+    } catch (err) {
+      console.error('Error loading bugs:', err);
+      setBugs([]);
+    }
   }
 
   async function onRemoveBug(bugId) {

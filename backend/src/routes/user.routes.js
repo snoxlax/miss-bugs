@@ -11,7 +11,6 @@ import { isAuthenticated } from '../middleware/authentication.js';
 
 const router = express.Router();
 
-// All routes require authentication and admin access
 router.get('/', isAuthenticated, isAdmin, getUsers);
 router.get('/:id', isAuthenticated, isAdmin, getUser);
 router.post('/', isAuthenticated, isAdmin, createUser);

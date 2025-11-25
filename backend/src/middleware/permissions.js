@@ -2,13 +2,19 @@ import { bugService } from '../services/bug.service.js';
 
 export function canModifyBug(user, bug) {
   if (!user) return false;
-  return user.isAdmin || bug.creator._id === user._id;
+  const userCreatorId = bug.creator?._id || bug.creator;
+  const userId = user._id;
+  return user.isAdmin || userCreatorId?.toString() === userId?.toString();
 }
 
-export function canDeleteUser(user, userToDelete) {
+export async function canDeleteUser(user, userToDelete) {
   if (!user) return false;
-  const userToDeleteHasBugs = bugService
-    .findAll()
-    .some((bug) => bug.creator._id === userToDelete._id);
-  return user.isAdmin && user._id !== userToDelete._id && !userToDeleteHasBugs;
+  if (!user.isAdmin) return false;
+  if (user._id?.toString() === userToDelete._id?.toString()) return false;
+
+  const { bugs } = await bugService.findAll();
+  const userToDeleteHasBugs = bugs.some(
+    (bug) => bug.creator?._id?.toString() === userToDelete._id?.toString()
+  );
+  return !userToDeleteHasBugs;
 }

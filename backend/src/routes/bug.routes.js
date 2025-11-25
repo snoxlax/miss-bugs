@@ -11,12 +11,10 @@ import { isAuthenticated } from '../middleware/authentication.js';
 
 const router = express.Router();
 
-// Public routes
 router.get('/', getBugs);
 router.get('/download', downloadBugs);
 router.get('/:id', getBug);
 
-// Authenticated routes
 router.post('/', isAuthenticated, createBug);
 router.put('/:id', isAuthenticated, updateBug);
 router.delete('/:id', isAuthenticated, deleteBug);

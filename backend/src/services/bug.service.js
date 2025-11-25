@@ -1,30 +1,19 @@
-import fs from 'fs';
+import { dbService } from './db.service.js';
 import PDFDocument from 'pdfkit';
+import { buildId } from '../utils/mongo.utils.js';
 
-const DATA_FILE = 'data/bugs.json';
-let bugs = [];
+const collectionName = 'bug';
 
-function loadData() {
-  try {
-    const data = fs.readFileSync(DATA_FILE, 'utf-8');
-    bugs = JSON.parse(data);
-  } catch (error) {
-    console.error('Error loading bugs:', error);
-  }
-}
+export const bugService = {
+  findAll,
+  findById,
+  create,
+  update,
+  remove,
+  toPdf,
+};
 
-function saveData() {
-  try {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(bugs, null, 2), 'utf-8');
-    console.log('Bugs saved to file');
-  } catch (error) {
-    console.error('Error saving bugs:', error);
-  }
-}
-
-import { sortBugs, paginateBugs, filterBugs } from '../utils/utils.service.js';
-
-function findAll(options = {}) {
+async function findAll(options = {}) {
   const {
     sortBy = 'createdAt',
     sortDir = 'desc',
@@ -35,97 +24,179 @@ function findAll(options = {}) {
     labels,
   } = options;
 
-  let result = bugs;
+  try {
+    const collection = await dbService.getCollection(collectionName);
+    const criteria = _buildCriteria({ txt, minSeverity, labels });
+    const sort = _buildSort(sortBy, sortDir);
 
-  let labelsArr = labels;
-  if (typeof labels === 'string') {
-    labelsArr = labels
-      .split(',')
-      .map((l) => l.trim())
-      .filter(Boolean);
+    const totalCount = await collection.countDocuments(criteria);
+    const bugs = await collection
+      .find(criteria)
+      .sort(sort)
+      .skip(Number(pageIdx) * Number(pageSize))
+      .limit(Number(pageSize))
+      .toArray();
+
+    bugs.forEach(_addCreatedAt);
+
+    return {
+      bugs,
+      totalPages: Math.ceil(totalCount / Number(pageSize)),
+      totalCount,
+    };
+  } catch (e) {
+    console.error('error in bug service:', e);
+    throw new Error(e);
   }
-
-  result = filterBugs(result, {
-    txt: txt ? txt.toLowerCase() : undefined,
-    minSeverity,
-    labels: labelsArr,
-  });
-
-  result = sortBugs(result, sortBy, sortDir);
-
-  result = paginateBugs(result, Number(pageIdx) || 0, Number(pageSize) || 10);
-
-  return result;
 }
 
-function findById(id) {
-  return bugs.find((bug) => bug._id === id);
-}
+async function findById(id) {
+  try {
+    const collection = await dbService.getCollection(collectionName);
+    const bugId = buildId(id);
+    const bug = await collection.findOne({ _id: bugId });
 
-function create(data, user) {
-  const newBug = {
-    _id: (bugs.length + 1).toString(),
-    title: data.title,
-    severity: data.severity,
-    createdAt: data.createdAt,
-    description: data.description || '',
-    labels: data.labels || [],
-    creator: {
-      _id: user._id,
-      fullname: user.fullname,
-    },
-  };
-  bugs.push(newBug);
-  return newBug;
-}
+    if (!bug) return null;
 
-function update(id, data) {
-  const bug = findById(id);
-  if (bug) {
-    bug.title = data.title;
-    bug.severity = data.severity;
-    bug.description = data.description || bug.description;
-    bug.labels = data.labels || bug.labels;
+    _addCreatedAt(bug);
     return bug;
+  } catch (e) {
+    console.error('error in bug service:', e);
+    throw new Error(e);
   }
-  return null;
 }
 
-function remove(id) {
-  const index = bugs.findIndex((bug) => bug._id === id);
-  if (index !== -1) {
-    bugs.splice(index, 1);
-    return true;
+async function create(data, user) {
+  try {
+    const collection = await dbService.getCollection(collectionName);
+    const bugToInsert = {
+      title: data.title,
+      severity: data.severity,
+      description: data.description,
+      labels: data.labels,
+      creator: {
+        _id: user._id,
+        fullname: user.fullname,
+        username: user.username,
+      },
+    };
+
+    const { insertedId } = await collection.insertOne(bugToInsert);
+    const newBug = await collection.findOne({ _id: insertedId });
+
+    _addCreatedAt(newBug);
+    return newBug;
+  } catch (e) {
+    console.error('error in bug service:', e);
+    throw new Error(e);
   }
-  return false;
 }
 
-function toPdf() {
-  const doc = new PDFDocument();
-  doc.text('Bugs Report');
-  doc.moveDown();
-  bugs.forEach((bug) => {
-    doc.fontSize(10);
-    doc.text(`ID: ${bug._id}`);
-    doc.text(`Title: ${bug.title}`);
-    doc.text(`Severity: ${bug.severity}`);
-    doc.text(`Created: ${new Date(bug.createdAt).toLocaleDateString()}`);
-    doc.text(`Description: ${bug.description}`);
-    doc.text(`Labels: ${bug.labels.join(', ')}`);
+async function update(id, data) {
+  try {
+    const collection = await dbService.getCollection(collectionName);
+    const bugId = buildId(id);
+    const bugToUpdate = {
+      title: data.title,
+      severity: data.severity,
+      description: data.description,
+      labels: data.labels,
+    };
+
+    const { matchedCount } = await collection.updateOne(
+      { _id: bugId },
+      { $set: bugToUpdate }
+    );
+
+    if (!matchedCount) return null;
+
+    const updatedBug = await collection.findOne({ _id: bugId });
+    _addCreatedAt(updatedBug);
+    return updatedBug;
+  } catch (e) {
+    console.error('error in bug service:', e);
+    throw new Error(e);
+  }
+}
+
+async function remove(id) {
+  try {
+    const collection = await dbService.getCollection(collectionName);
+    const bugId = buildId(id);
+    const { deletedCount } = await collection.deleteOne({ _id: bugId });
+    return deletedCount > 0;
+  } catch (e) {
+    console.error('error in bug service:', e);
+    throw new Error(e);
+  }
+}
+
+async function toPdf() {
+  try {
+    const collection = await dbService.getCollection(collectionName);
+    const bugs = await collection.find().toArray();
+
+    const doc = new PDFDocument();
+    doc.text('Bugs Report');
     doc.moveDown();
-  });
-  return doc;
+
+    bugs.forEach((bug) => {
+      doc.fontSize(10);
+      doc.text(`ID: ${bug._id}`);
+      doc.text(`Title: ${bug.title}`);
+      doc.text(`Severity: ${bug.severity}`);
+      const createdAt = bug.createdAt
+        ? new Date(bug.createdAt).toLocaleDateString()
+        : bug._id
+        ? bug._id.getTimestamp().toLocaleDateString()
+        : 'N/A';
+      doc.text(`Created: ${createdAt}`);
+      doc.text(`Description: ${bug.description || ''}`);
+      doc.text(`Labels: ${bug.labels ? bug.labels.join(', ') : ''}`);
+      doc.moveDown();
+    });
+
+    return doc;
+  } catch (e) {
+    console.error('error in bug service:', e);
+    throw new Error(e);
+  }
 }
 
-loadData();
+function _buildCriteria(filterBy) {
+  const criteria = {};
 
-export const bugService = {
-  findAll,
-  findById,
-  create,
-  update,
-  remove,
-  toPdf,
-  saveData,
-  loadData,
-};
+  if (filterBy.txt) {
+    criteria.$or = [
+      { title: { $regex: filterBy.txt, $options: 'i' } },
+      { description: { $regex: filterBy.txt, $options: 'i' } },
+    ];
+  }
+
+  if (filterBy.minSeverity) {
+    criteria.severity = { $gte: Number(filterBy.minSeverity) };
+  }
+
+  if (filterBy.labels?.length > 0) {
+    criteria.labels = { $in: filterBy.labels.map((l) => new RegExp(l, 'i')) };
+  }
+
+  return criteria;
+}
+
+function _buildSort(sortBy, sortDir) {
+  const direction = sortDir === 'desc' ? -1 : 1;
+  const validSortFields = ['title', 'severity', 'createdAt', '_id'];
+
+  if (!sortBy || !validSortFields.includes(sortBy)) {
+    return { createdAt: -1 };
+  }
+
+  return { [sortBy]: direction };
+}
+
+function _addCreatedAt(bug) {
+  if (bug && !bug.createdAt && bug._id) {
+    bug.createdAt = bug._id.getTimestamp().getTime();
+  }
+}

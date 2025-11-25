@@ -1,0 +1,102 @@
+.bug-msg {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border-radius: 10px;
+  background-color: var(--clr1bg-light);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.bug-msg-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.bug-msg .chat-window {
+  background-color: var(--gray1);
+  border: 1px solid var(--clr1bg);
+  border-radius: 10px;
+  padding: 0.75rem;
+  min-height: 150px;
+  max-height: 260px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.bug-msg .chat-line {
+  max-width: 80%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 12px;
+  background-color: var(--clr2bg-light);
+}
+
+.bug-msg .chat-line.mine {
+  align-self: flex-end;
+  background-color: var(--clr2bg);
+}
+
+.bug-msg .chat-line-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.15rem;
+}
+
+.bug-msg .chat-line .author {
+  font-size: 0.8rem;
+  color: var(--gray2);
+  display: block;
+}
+
+.bug-msg .chat-line.mine .author {
+  text-align: right;
+}
+
+.bug-msg .delete-msg-btn {
+  background: transparent;
+  border: none;
+  color: var(--gray2);
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0 0.3rem;
+  line-height: 1;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.bug-msg .delete-msg-btn:hover {
+  opacity: 1;
+  color: var(--clr1);
+}
+
+.bug-msg .msg-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.bug-msg .msg-form input {
+  flex: 1;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--clr1);
+}
+
+.bug-msg .msg-form button {
+  margin: 0;
+}
+
+.bug-msg .muted {
+  color: var(--gray2);
+  margin: 0;
+}
+
+@media (max-width: 720px) {
+  .bug-msg .chat-line {
+    max-width: 90%;
+  }
+}

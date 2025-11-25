@@ -1,6 +1,8 @@
-Ex-missBug-v0.02.pdf
+*.pdf
 
 */node_modules/
 *.pdf
 memory-bank/
 backend/public/
+
+.env
