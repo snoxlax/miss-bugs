@@ -47,7 +47,7 @@ export function AppHeader() {
       console.error('Logout failed:', err);
     }
   }
-  console.info('🚀 ~ AppHeader ~ user:', user);
+
   return (
     <header className="app-header container">
       <div className="header-container">

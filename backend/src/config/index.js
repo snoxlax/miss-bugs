@@ -7,7 +7,7 @@ export function getConfig() {
 
   const port = parseInt(process.env.PORT || '3030', 10);
 
-  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+  const frontendUrl = process.env.FRONTEND_URL || '';
 
   return {
     app: {

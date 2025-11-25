@@ -15,7 +15,6 @@ export function BugIndex() {
   async function loadBugs() {
     try {
       let result = await bugService.query();
-      // Handle response format: could be { bugs: [] } or just []
       let bugs = Array.isArray(result) ? result : result.bugs || [];
       bugs = bugService.filterBugs(bugs, filterBy);
       setBugs(bugs);
@@ -44,7 +43,6 @@ export function BugIndex() {
     };
     try {
       const savedBug = await bugService.save(bug);
-      console.log('Added Bug', savedBug);
       setBugs((prevBugs) => [...prevBugs, savedBug]);
       showSuccessMsg('Bug added');
     } catch (err) {
